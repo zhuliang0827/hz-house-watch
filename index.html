@@ -196,12 +196,27 @@ td.stick{position:sticky;left:0;background:inherit;z-index:1}
 tbody tr td.stick{background:#fffefb;box-shadow:1px 0 0 var(--line)}
 tbody tr:nth-child(even) td.stick{background:#fdfcf8}
 tbody tr:hover td.stick{background:var(--brand-bg)}
+/* 操作列固定在右侧,横向滚动也不会丢跳转入口 */
+thead th.stick-r{position:sticky;right:0;z-index:3;background:#fbfaf6;
+  box-shadow:-1px 0 0 var(--line)}
+tbody td.stick-r{position:sticky;right:0;z-index:1;background:#fffefb;
+  box-shadow:-1px 0 0 var(--line)}
+tbody tr:nth-child(even) td.stick-r{background:#fdfcf8}
+tbody tr:hover td.stick-r{background:var(--brand-bg)}
+tbody tr.hot td.stick-r{background:#fff9ec}
 .muted{color:var(--ink3)}
 .comm{font-weight:650;color:var(--ink)}
 .tiny{font-size:11px;color:var(--ink3)}
 .good{color:var(--ok);font-weight:650}
 .mid{color:var(--ink2)}
 .bad{color:var(--danger);font-weight:650}
+
+/* 表格内可点文字 / 行内按钮组 */
+a.lnk{cursor:pointer;color:var(--brand-dk);font-weight:650;
+  border-bottom:1px dashed var(--brand-ln);text-decoration:none}
+a.lnk:hover{border-bottom-style:solid;border-bottom-color:var(--brand);text-decoration:none}
+td .acts{display:flex;gap:5px;align-items:center}
+td .acts .btn{padding:3px 9px;font-size:11.5px}
 
 /* ── 徽章 / 标签 ── */
 .bdg{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;
@@ -744,7 +759,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
         </div>
       </span>
       <button class="btn gh" onclick="exportCsv()">导出当前筛选结果为 CSV</button>
-      <span class="tiny">列头可点击排序 · 首列固定</span>
+      <span class="tiny">列头可排序 · 首列固定 · <b>小区名可点开详情</b> · 行尾有 <b>VR</b> 与 <b>贝壳 ↗</b> 外部跳转</span>
     </div>
   </div>
 
@@ -857,7 +872,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
   <td><span class="g gA">A</span> 贝壳官方开放平台(beike CLI,Bearer Key 授权)</td>
   <td class="tiny">非爬虫,官方接口。但采集方式为「6 区 × 4 价格档,每档取排序前 10 条」的抽样,
   单期样本量约 200 套,排序变化会造成漏召回。仅代表贝壳平台内、且被该抽样策略选中的在售房源。</td></tr>
-<tr><td><b>5 年期以上 LPR</b></td><td class="num">3.5%</td><td>2026-09-20</td><td><span class="g gA">A</span> 中国人民银行授权全国银行间同业拆借中心</td><td class="tiny">贷款定价基准,实际首套房贷利率通常为 LPR 加/减银行点差,请按具体银行报价调整</td></tr><tr><td><b>全市二手住宅存量挂牌</b></td><td class="num">144689套</td><td>2026-08</td><td><span class="g gA">A</span> 中指研究院 CREIS 二手房版 · 杭州二手房市场监测月报(2026年08月)</td><td class="tiny">较上月增加 3328 套 —— 挂牌量仍在净增</td></tr><tr><td><b>存量挂牌月度净增</b></td><td class="num">3328套</td><td>2026-08</td><td><span class="g gA">A</span> 中指研究院 CREIS 二手房版 · 月报(2026年08月)</td><td class="tiny">挂牌量仍在净增 —— 卖方竞争在加剧,不是缓解</td></tr><tr><td><b>全市二手住宅成交</b></td><td class="num">5134套</td><td>2026-08</td><td><span class="g gA">A</span> 中指研究院 CREIS 二手房版 · 月报(2026年08月)</td><td class="tiny">同比 -17.7%。中指院同期全国住宅周报另给出 4853 套(同比 -0.1%),两个口径差异未公开说明,此处采用月报口径</td></tr><tr><td><b>全市二手住宅挂牌均价</b></td><td class="num">30800元/㎡</td><td>2026-08</td><td><span class="g gA">A</span> 中指研究院 CREIS 二手房版 · 月报(2026年08月)</td><td class="tiny">同比 -8.8%,今年累计 -8.6%</td></tr><tr><td><b>市区网签套数(含富阳/临安)</b></td><td class="num">6337套</td><td>2026-08</td><td><span class="g gB">B</span> 杭州市区网签口径,经腾讯新闻/中华网转述</td><td class="tiny">环比 -10.8%,同比 -4.5%;含富阳、临安,故高于中指院主城口径</td></tr><tr><td><b>市区网签成交均价</b></td><td class="num">23400元/㎡</td><td>2026-08</td><td><span class="g gB">B</span> 杭州市区网签口径,经腾讯新闻/中华网转述</td><td class="tiny">环比 -6.3%,同比 -17%</td></tr><tr><td><b>上半年二手住宅成交均价</b></td><td class="num">26817元/㎡</td><td>2026-H1</td><td><span class="g gB">B</span> 杭州贝壳研究院,经腾讯新闻转述</td><td class="tiny">同比 -15.2%</td></tr><tr><td><b>挂牌率 TOP30 小区门槛</b></td><td class="num">10.83%</td><td>2026-08</td><td><span class="g gB">B</span> 杭州贝壳研究院(剔除临安、富阳)</td><td class="tiny">6 个小区挂牌率超 15%;最高的小河云庄达 28%(137 户挂 39 套)</td></tr><tr><td><b>高挂牌率小区去化周期</b></td><td class="num">24月</td><td>2026-08</td><td><span class="g gB">B</span> 杭州贝壳研究院院长上官剑表述</td><td class="tiny">「已超过 24 个月」,为部分高挂牌率小区,非全市均值</td></tr><tr><td><b>带看量环比</b></td><td class="num">6.6%</td><td>2026-08</td><td><span class="g gB">B</span> 杭州贝壳研究院</td><td class="tiny">前置指标回温,但同期新签单量环比 -2.7%,带看未转化为成交</td></tr><tr><td><b>新签单量环比</b></td><td class="num">-2.7%</td><td>2026-08</td><td><span class="g gB">B</span> 杭州贝壳研究院</td><td class="tiny">同比 -2.4%</td></tr><tr><td><b>下半年均价判断</b></td><td class="num">2.5–2.6 万/㎡</td><td>2026-H2</td><td><span class="g gB">B</span> 克而瑞浙江区域</td><td class="tiny">判断为窄幅整理,不存在普涨基础</td></tr>
+<tr><td><b>5 年期以上 LPR</b></td><td class="num">3.5%</td><td>2026-09-20</td><td><span class="g gA">A</span> <a href="https://www.chinamoney.com.cn/chinese/bklpr" target="_blank" rel="noopener" title="打开原始出处">中国人民银行授权全国银行间同业拆借中心 ↗</a></td><td class="tiny">贷款定价基准,实际首套房贷利率通常为 LPR 加/减银行点差,请按具体银行报价调整</td></tr><tr><td><b>全市二手住宅存量挂牌</b></td><td class="num">144689套</td><td>2026-08</td><td><span class="g gA">A</span> <a href="https://www.cih-index.com/report/detail/128670.html" target="_blank" rel="noopener" title="打开原始出处">中指研究院 CREIS 二手房版 · 杭州二手房市场监测月报(2026年08月) ↗</a></td><td class="tiny">较上月增加 3328 套 —— 挂牌量仍在净增</td></tr><tr><td><b>存量挂牌月度净增</b></td><td class="num">3328套</td><td>2026-08</td><td><span class="g gA">A</span> <a href="https://www.cih-index.com/report/detail/128670.html" target="_blank" rel="noopener" title="打开原始出处">中指研究院 CREIS 二手房版 · 月报(2026年08月) ↗</a></td><td class="tiny">挂牌量仍在净增 —— 卖方竞争在加剧,不是缓解</td></tr><tr><td><b>全市二手住宅成交</b></td><td class="num">5134套</td><td>2026-08</td><td><span class="g gA">A</span> <a href="https://www.cih-index.com/report/detail/128670.html" target="_blank" rel="noopener" title="打开原始出处">中指研究院 CREIS 二手房版 · 月报(2026年08月) ↗</a></td><td class="tiny">同比 -17.7%。中指院同期全国住宅周报另给出 4853 套(同比 -0.1%),两个口径差异未公开说明,此处采用月报口径</td></tr><tr><td><b>全市二手住宅挂牌均价</b></td><td class="num">30800元/㎡</td><td>2026-08</td><td><span class="g gA">A</span> <a href="https://www.cih-index.com/report/detail/128670.html" target="_blank" rel="noopener" title="打开原始出处">中指研究院 CREIS 二手房版 · 月报(2026年08月) ↗</a></td><td class="tiny">同比 -8.8%,今年累计 -8.6%</td></tr><tr><td><b>市区网签套数(含富阳/临安)</b></td><td class="num">6337套</td><td>2026-08</td><td><span class="g gB">B</span> <a href="https://news.qq.com/rain/a/20260905A07KC900" target="_blank" rel="noopener" title="打开原始出处">杭州市区网签口径,经腾讯新闻/中华网转述 ↗</a></td><td class="tiny">环比 -10.8%,同比 -4.5%;含富阳、临安,故高于中指院主城口径</td></tr><tr><td><b>市区网签成交均价</b></td><td class="num">23400元/㎡</td><td>2026-08</td><td><span class="g gB">B</span> <a href="https://news.qq.com/rain/a/20260905A07KC900" target="_blank" rel="noopener" title="打开原始出处">杭州市区网签口径,经腾讯新闻/中华网转述 ↗</a></td><td class="tiny">环比 -6.3%,同比 -17%</td></tr><tr><td><b>上半年二手住宅成交均价</b></td><td class="num">26817元/㎡</td><td>2026-H1</td><td><span class="g gB">B</span> <a href="https://news.qq.com/rain/a/20260905A07KC900" target="_blank" rel="noopener" title="打开原始出处">杭州贝壳研究院,经腾讯新闻转述 ↗</a></td><td class="tiny">同比 -15.2%</td></tr><tr><td><b>挂牌率 TOP30 小区门槛</b></td><td class="num">10.83%</td><td>2026-08</td><td><span class="g gB">B</span> <a href="https://www.toutiao.com/a7676423145665954314" target="_blank" rel="noopener" title="打开原始出处">杭州贝壳研究院(剔除临安、富阳) ↗</a></td><td class="tiny">6 个小区挂牌率超 15%;最高的小河云庄达 28%(137 户挂 39 套)</td></tr><tr><td><b>高挂牌率小区去化周期</b></td><td class="num">24月</td><td>2026-08</td><td><span class="g gB">B</span> <a href="https://www.toutiao.com/a7676423145665954314" target="_blank" rel="noopener" title="打开原始出处">杭州贝壳研究院院长上官剑表述 ↗</a></td><td class="tiny">「已超过 24 个月」,为部分高挂牌率小区,非全市均值</td></tr><tr><td><b>带看量环比</b></td><td class="num">6.6%</td><td>2026-08</td><td><span class="g gB">B</span> <a href="https://news.qq.com/rain/a/20260905A07KC900" target="_blank" rel="noopener" title="打开原始出处">杭州贝壳研究院 ↗</a></td><td class="tiny">前置指标回温,但同期新签单量环比 -2.7%,带看未转化为成交</td></tr><tr><td><b>新签单量环比</b></td><td class="num">-2.7%</td><td>2026-08</td><td><span class="g gB">B</span> <a href="https://news.qq.com/rain/a/20260905A07KC900" target="_blank" rel="noopener" title="打开原始出处">杭州贝壳研究院 ↗</a></td><td class="tiny">同比 -2.4%</td></tr><tr><td><b>下半年均价判断</b></td><td class="num">2.5–2.6 万/㎡</td><td>2026-H2</td><td><span class="g gB">B</span> <a href="https://www.toutiao.com/a7676423145665954314" target="_blank" rel="noopener" title="打开原始出处">克而瑞浙江区域 ↗</a></td><td class="tiny">判断为窄幅整理,不存在普涨基础</td></tr>
 </tbody></table>
 </div>
 <div class="note">
@@ -879,7 +894,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
 <div class="foot">
   数据来源:贝壳官方开放平台(beike CLI,经官方 Bearer Key 授权);市场参照层见「数据来源与口径台账」。<br>
   房源状态为采集时点的「在售」;价格、权属、学区、税费均需实地与不动产登记中心核验。<br>
-  本页为个人决策辅助工具,不构成投资建议。生成时间 2026-09-22 11:40 · 当期样本 186 套 / 累计池 297 套。
+  本页为个人决策辅助工具,不构成投资建议。生成时间 2026-09-22 13:58 · 当期样本 186 套 / 累计池 297 套。
 </div>
 
 </div>
@@ -1044,10 +1059,10 @@ const COLGROUPS = {
 const COLS = [
   {
     l: '小区 / 板块', g: 'base', sticky: true, num: false,
-    v: r => r.community,
-    h: r => `<span class="comm">${esc(r.community)}</span>`
-      + `<div class="tiny">${esc(r.district || '')} · ${esc(r.biz_area || '')}`
-      + `${r.has_seat ? ' · <span class="good">有学位</span>' : (r.no_seat ? ' · 无学位' : '')}</div>`
+    v: r => r.community, tip: '点小区名打开详情',
+    h: r => `<a class="lnk" onclick="showDetail('${r.id}')" title="点击查看房源详情">`
+      + `${esc(r.community)}</a>`
+      + `<div class="tiny">${esc(r.district || '')} · ${esc(r.biz_area || '')}</div>`
   },
   {
     l: '户型 / 面积', g: 'base', num: false, v: r => r.build_area,
@@ -1130,7 +1145,19 @@ const COLS = [
     h: r => `<span class="bdg b${r._tier}">${r._tier} ${r._score}</span>`
       + `<div class="tiny">池内第 ${r._rank} 名</div>`
   },
-  { l: '操作', g: 'base', num: false, v: () => '', h: r => '<button class="btn gh tsm" onclick="showDetail(\'' + r.id + '\')">详情</button>' }
+  {
+    l: '操作 / 跳转', g: 'base', num: false, v: () => '', stickyR: true,
+    h: r => {
+      const ke = r.official_url || ('https://hz.ke.com/ershoufang/' + r.id + '.html');
+      return `<div class="acts">`
+        + `<button class="btn gh tsm" onclick="showDetail('${r.id}')">详情</button>`
+        + (r.vr_url
+          ? `<a class="btn tsm" href="${esc(r.vr_url)}" target="_blank" rel="noopener" title="打开贝壳 VR 看房">VR</a>`
+          : '')
+        + `<a class="btn gh tsm" href="${esc(ke)}" target="_blank" rel="noopener" title="打开贝壳官网房源页">贝壳 ↗</a>`
+        + `</div>`;
+    }
+  }
 ];
 const visibleCols = () => COLS.filter(c => state.groups.has(c.g));
 
@@ -1152,12 +1179,12 @@ function renderTable(tid, rows) {
     });
   }
   const head = cols.map((c, i) =>
-    `<th class="s${st.i === i ? ' act' : ''}" title="${esc(c.tip || '')}" onclick="doSort('${tid}',${i})">`
+    `<th class="s${st.i === i ? ' act' : ''}${c.stickyR ? ' stick-r' : ''}" title="${esc(c.tip || '')}" onclick="doSort('${tid}',${i})">`
     + esc(c.l) + (st.i === i ? (st.asc ? ' ↑' : ' ↓') : '') + '</th>'
   ).join('');
   const body = data.length ? data.map(r => {
-    const tds = cols.map((c, i) => {
-      const stick = c.sticky ? ' stick' : '';
+    const tds = cols.map(c => {
+      const stick = c.sticky ? ' stick' : (c.stickyR ? ' stick-r' : '');
       return `<td class="${c.num ? 'num' : ''}${stick}" data-v="${esc(c.v(r))}">${c.h(r)}</td>`;
     }).join('');
     const hot = (r.recent_cut || r.not_two) && state.groups.has('risk') ? ' class="hot"' : '';
@@ -1537,7 +1564,7 @@ function csvVal(c, r) {
 }
 function exportCsv() {
   const rows = P.rows.filter(r => r.is_70y).filter(pass);
-  const cols = visibleCols().filter(c => c.l !== '操作' && c.l !== '风险与标签' && c.l !== '小区 / 板块');
+  const cols = visibleCols().filter(c => c.l !== '操作 / 跳转' && c.l !== '风险与标签' && c.l !== '小区 / 板块');
   const head = ['小区', '区域', '板块', '风险标签', ...cols.map(c => c.l.replace('*', ''))];
   const out = [head.join(',')];
   const clean = v => v == null ? '' : String(v).replace(/[,\n]/g, '、');
