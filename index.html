@@ -124,6 +124,13 @@ h4.blk span{font-weight:400;color:var(--ink3);font-size:11.5px;margin-left:6px}
 .note.danger{border-left-color:var(--danger);background:var(--danger-bg);
   border-color:var(--danger-ln);color:#7d2626}
 .note.ok{border-left-color:var(--ok);background:var(--ok-bg)}
+.morerow{text-align:center;margin:10px 0 4px}
+.morerow .btn{font-size:13px;padding:7px 22px}
+.note.banner{border-left-color:var(--danger);background:var(--danger-bg);
+  border-color:var(--danger-ln);color:#7d2626;font-size:13px;line-height:1.95;
+  box-shadow:0 1px 0 var(--danger-ln) inset;margin:14px 0 18px}
+.note.banner b{color:#5e1818}
+.note.banner code{background:#f6e2e2;color:#7d2626}
 .note b{color:var(--ink)}
 
 /* ── 控制条 ── */
@@ -351,9 +358,21 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
 @media(max-width:900px){
   .grid{grid-template-columns:1fr}
   .wrap{padding:20px 14px 50px}
-  .nav{margin:0 -14px 18px;padding:9px 14px}
+  .nav{margin:0 -14px 18px;padding:9px 14px;overflow-x:auto;white-space:nowrap}
+  .nav a{display:inline-block;margin-right:10px}
   h1{font-size:24px}
   .charts{grid-template-columns:1fr}
+  .ctrl .line{gap:10px}
+  .tbox{max-height:none}
+  .panels{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .head .sub{font-size:11.5px;flex-wrap:wrap;gap:4px}
+  .head .sub .dot{display:none}
+  h2{font-size:18px}
+  .blk{font-size:14px}
+  .ctrl .line{font-size:13px}
+  .btn{padding:7px 12px;font-size:12.5px}
 }
 </style>
 </head>
@@ -384,6 +403,17 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
 </div>
 
 
+<div class="note banner" id="sampleBias">
+  <b>⚠ 数据口径:抽样,不是全量。</b>
+  贝壳 <code>buy search</code> 单次只返回<b>前 10 条</b>、无分页 / 无排序参数;
+  本期 24 次查询累计召回 <b>6,666</b> 套,实际入库
+  <b>240</b> 套(<b>覆盖率仅 3.6%</b>,采集于 20260927_2053)。
+  因此「中位单价 / 中位租售比 / 供给量」是<b>这 240 套的中位数</b>,不是全市或板块的真实中位数;
+  <b>天级的新增 / 下架 / 降价主要是采样抖动,不是市场信号</b>。
+  本看板用于<b>横向比较已抓到的房源</b>,不用于判断市场总量 —— 详见下方「样本与可信度」。
+</div>
+
+
 <div class="cred">
   <h3>样本与可信度 <span class="tag">先读这里</span></h3>
   <div class="credgrid">
@@ -391,7 +421,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
       <div class="v">224</div><div class="s">70 年住宅 143 · 公寓 81</div></div>
     <div class="cell"><div class="k">累计池(合并 13 期去重)</div>
       <div class="v">685</div><div class="s">仅作房源库,不代表当期在售</div></div>
-    <div class="cell danger"><div class="k">样本覆盖率</div>
+    <div class="cell danger"><div class="k">样本覆盖率(占全市)</div>
       <div class="v">0.15%</div>
       <div class="s">全市存量挂牌 144,689 套(2026-08)</div></div>
     <div class="cell"><div class="k">70 年住宅中已挂 ≥8 期</div>
@@ -404,7 +434,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
     能:看特定户型的<b>相对贵贱</b>、算持有成本、筛出候选、跟踪个别房源挂了多久。<br>
     不能:推断全市价格走势、判断板块景气度、统计真实成交量。
     覆盖率为千分之几量级,且采集是<b>按排序取前 10 条</b>的抽样 —— 排序变化会造成漏召回,
-    所以「今日新增 +17 / 未再出现 −25」这类天级数字<b>含抽样噪音,不是市场信号</b>。<br>
+    所以「今日新增 +17 / 未再出现 −25」这类天级数字<b>含抽样噪音,不是市场信号</b>。<br>更底层的口径:本期 24 次查询累计召回 <b>6,666</b> 套、实际入库 <b>240</b> 套(覆盖率 <b>3.6%</b>) —— 也就是说 96% 以上的潜在房源<b>根本没进样本</b>,上面那个「千分之几」是<b>在已抓到的样本内部</b>占全市的比例。<br>
     判断市场方向请看第 ④ 节里的外部权威口径。
   </div>
 </div>
@@ -806,8 +836,8 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
           <label><input type="checkbox" value="risk" checked> 流动性 · 风险(挂期 / 供给 / 标签)</label>
         </div>
       </span>
-      <button class="btn gh" onclick="exportCsv()">导出当前筛选结果为 CSV</button>
-      <span class="tiny">列头可排序 · 首列固定 · <b>小区名可点开详情</b> · 行尾有 <b>VR</b> 与 <b>贝壳 ↗</b> 外部跳转</span>
+      <button class="btn gh" id="btnExport" onclick="exportCsv()">导出全部符合项 CSV</button>
+      <span class="tiny">导出的是<b>全部符合当前筛选</b>的房源(不止主榜前 50 条) · 列头可排序 · 首列固定 · <b>小区名可点开详情</b> · 行尾有 <b>VR</b> 与 <b>贝壳 ↗</b> 外部跳转</span>
     </div>
   </div>
 
@@ -816,8 +846,9 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
     <div class="panel" id="sumScore"></div>
   </div>
 
-  <h4 class="blk">主榜 · 70 年产权住宅前 50 <span>按当前权重排序,已应用下方筛选条件</span></h4>
+  <h4 class="blk">主榜 · 70 年产权住宅 <span id="mainTot">前 50 / 共 0 套</span> <span>按当前权重排序,已应用下方筛选条件</span></h4>
   <div class="tbox"><div id="t_main"></div></div>
+  <div class="morerow"><button id="mainMore" class="btn" style="display:none" onclick="mainExpand()">显示更多 ▾</button></div>
 
   <h4 class="blk" id="all">全部 70 年产权住宅 <span class="tiny" id="cnt-t_all">0</span> 套</h4>
   <div class="ctrl">
@@ -956,7 +987,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
 <div class="foot">
   数据来源:贝壳官方开放平台(beike CLI,经官方 Bearer Key 授权);市场参照层见「数据来源与口径台账」。<br>
   房源状态为采集时点的「在售」;价格、权属、学区、税费均需实地与不动产登记中心核验。<br>
-  本页为个人决策辅助工具,不构成投资建议。生成时间 2026-09-27 21:01 · 当期样本 224 套 / 累计池 685 套。
+  本页为个人决策辅助工具,不构成投资建议。生成时间 2026-09-27 21:39 · 当期样本 224 套 / 累计池 685 套。
 </div>
 
 </div>
@@ -1011,7 +1042,15 @@ const AREA_PROFILE = {
   three: { label: '三口之家', lo: 70, hi: 100 },
   big: { label: '三口+老人', lo: 95, hi: 135 }
 };
-const FIN = { down: 30, rate: 3.5, years: 30, agency: 1.0, profile: 'two', needSchool: false };
+// FIN 不再双份硬编码 —— 初始值一律从页面 DOM 读(页面由 Python 端 FIN 渲染),
+// Python 是唯一真源。改 Python 端默认值即可,无需同步两处。
+function _finNum(id) { const e = document.getElementById(id); return e ? parseFloat(e.value) : 0; }
+const FIN = {
+  down: _finNum('fin-down'), rate: _finNum('fin-rate'), years: _finNum('fin-years'),
+  agency: _finNum('fin-agency'),
+  profile: (document.getElementById('profile') ? document.getElementById('profile').value : 'two'),
+  needSchool: false
+};
 const F = {
   q: '', districts: new Set(), priceMin: 0, priceMax: 999, yieldMin: 0,
   metroMax: 99999, ageMax: 99, onlyCut: false, onlyCash: false, onlyNoVat: false,
@@ -1375,13 +1414,28 @@ function renderSummary() {
 }
 
 /* ── ⑨ 总控刷新 ───────────────────────────────────────────────────── */
+const MAIN_LIMIT = 50;            // 主榜初始只显示前 N 条,避免一次性渲染过多
+let mainShown = MAIN_LIMIT;
+function mainExpand() { mainShown = Infinity; F.q = F.q; refresh(); }
+
 function refresh() {
   rescore();
   const resi = P.rows.filter(r => r.is_70y);
-  renderTable('t_main', resi.filter(pass).slice(0, 50));
-  renderTable('t_all', resi.filter(pass));
+  const mainRows = resi.filter(pass);
+  renderTable('t_main', mainRows.slice(0, mainShown));
+  renderTable('t_all', mainRows);
   renderTable('t_apt', P.rows.filter(r => !r.is_70y).filter(pass));
   renderSummary();
+  // 主榜计数与「显示更多」按钮
+  const tot = document.getElementById('mainTot');
+  if (tot) tot.textContent = `前 ${Math.min(mainShown, mainRows.length)} / 共 ${mainRows.length} 套`;
+  const more = document.getElementById('mainMore');
+  if (more) {
+    more.style.display = (mainShown < mainRows.length) ? '' : 'none';
+    if (mainShown < mainRows.length) more.textContent = `显示更多 ▾（剩余 ${mainRows.length - mainShown} 套）`;
+  }
+  const exp = document.getElementById('btnExport');
+  if (exp) exp.title = `导出全部符合项 ${mainRows.length} 套(不受「显示更多」影响)`;
   document.querySelectorAll('#wPanel .wslug').forEach(el => {
     const k = el.dataset.k;
     el.querySelector('input').value = W[k];
@@ -1699,9 +1753,12 @@ function exportCsv() {
   });
   const csv = '\ufeff' + out.join('\n');
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  const blobUrl = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.href = blobUrl;
   a.download = 'hz-house-' + P.meta.today + '.csv';
+  document.body.appendChild(a);   // 部分浏览器要求节点在 DOM 内才能触发下载
   a.click();
+  setTimeout(() => { URL.revokeObjectURL(blobUrl); a.remove(); }, 0);
 }
 
 /* ── ⑬ 事件绑定 ───────────────────────────────────────────────────── */
