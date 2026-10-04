@@ -162,6 +162,35 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 .chip:hover{border-color:var(--brand-ln);background:var(--brand-bg);color:var(--brand-dk)}
 .chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
 .chip.gh{font-weight:500}
+.chip.sm{padding:4px 10px;font-size:11.5px}
+.chip i{font-style:normal;font-size:10px;opacity:.55;margin-left:4px;
+  font-variant-numeric:tabular-nums;font-weight:500}
+.chip.on i{opacity:.8}
+.chip.zero{opacity:.38;cursor:not-allowed}
+.cgroup{display:inline-flex;gap:5px;flex-wrap:wrap;align-items:center}
+.filter .line{align-items:flex-start;gap:14px 18px}
+.filter .field{align-items:flex-start;gap:5px 7px;flex-wrap:wrap}
+.filter .field > label{padding-top:5px;line-height:1.45;white-space:nowrap}
+.filter .field:has(.cgroup){align-items:flex-start}
+.filter .field:has(.cgroup) > label{align-self:flex-start}
+.fsum{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:13px;
+  padding-top:12px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--ink2)}
+.fsum .fcnt{font-weight:600}
+.fsum .fcnt b{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--brand-dk);
+  margin:0 2px;font-variant-numeric:tabular-nums}
+.fbits{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:180px}
+.fbit{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;
+  background:var(--brand-bg);border:1px solid var(--brand-ln);color:var(--brand-dk);
+  font-size:11.5px;font-weight:600;cursor:pointer;transition:.13s;font-family:inherit}
+.fbit:hover{background:#e0eee8;border-color:var(--brand)}
+.fbit::after{content:"×";font-size:13px;line-height:1;opacity:.55;margin-left:1px}
+.fbit:hover::after{opacity:1}
+.fbit .fv{font-weight:700}
+.fempty{color:var(--ink3);font-size:11.5px;font-style:italic}
+.msel .pop label .fc{margin-left:auto;padding-left:14px;font-size:10.5px;color:var(--ink3);
+  font-variant-numeric:tabular-nums;font-weight:500}
+.msel .pop label.dis{opacity:.4}
+.msel .pop.wide{min-width:224px}
 .chk{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink2);
   cursor:pointer;user-select:none}
 .chk input{accent-color:var(--brand);width:14px;height:14px}
@@ -837,12 +866,14 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
     <div class="panel" id="sumScore"></div>
   </div>
 
-  <h4 class="blk">主榜 · 70 年产权住宅 <span id="mainTot">前 50 / 共 0 套</span> <span>按当前权重排序,已应用下方筛选条件</span></h4>
+  <h4 class="blk">主榜 · <span id="mainTitle">70 年产权住宅</span> <span id="mainTot">前 50 / 共 0 套</span> <span>按当前权重排序,已应用下方筛选条件</span></h4>
   <div class="tbox"><div id="t_main"></div></div>
   <div class="morerow"><button id="mainMore" class="btn" style="display:none" onclick="mainExpand()">显示更多 ▾</button></div>
 
-  <h4 class="blk" id="all">全部 70 年产权住宅 <span class="tiny" id="cnt-t_all">0</span> 套</h4>
-  <div class="ctrl">
+  <h4 class="blk" id="all">全部 <span id="allTitle">70 年产权住宅</span> <span class="tiny" id="cnt-t_all">0</span> 套</h4>
+
+  <div class="ctrl filter">
+    <!-- ① 定位:文本 · 区域 · 产权类型 -->
     <div class="line">
       <input type="text" id="q" placeholder="搜索小区 / 板块 / 学校 / 标签…">
       <span class="msel" id="dSel">
@@ -852,42 +883,105 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
           <div class="acts"><a id="dAll">全选(不过滤)</a><a id="dClear">清空</a></div>
         </div>
       </span>
-      <span class="field"><label>总价</label>
-        <input type="range" id="pMin" min="50" max="200" step="5" value="50" style="width:100px">
-        <input type="range" id="pMax" min="50" max="200" step="5" value="200" style="width:100px">
-        <span class="tiny" id="pLab">50 – 200 万</span>
+      <span class="field"><label>产权类型</label>
+        <span class="cgroup" id="typeChips"></span>
+      </span>
+      <span class="field"><label>户型</label>
+        <span class="cgroup" id="roomChips"></span>
       </span>
     </div>
+
+    <!-- ② 价格与面积(区间) -->
+    <div class="line">
+      <span class="field"><label>总价</label>
+        <input type="range" id="pMin" min="50" max="200" step="5" value="50" style="width:92px">
+        <input type="range" id="pMax" min="50" max="200" step="5" value="200" style="width:92px">
+        <span class="tiny" id="pLab">50 – 200 万</span>
+      </span>
+      <span class="field"><label>单价</label>
+        <input type="range" id="uMin" min="5000" max="60000" step="500" value="5000" style="width:92px">
+        <input type="range" id="uMax" min="5000" max="60000" step="500" value="60000" style="width:92px">
+        <span class="tiny" id="uLab">不限</span>
+      </span>
+      <span class="field"><label>建面</label>
+        <input type="range" id="arMin" min="20" max="200" step="5" value="20" style="width:92px">
+        <input type="range" id="arMax" min="20" max="200" step="5" value="200" style="width:92px">
+        <span class="tiny" id="arLab">20 – 200 ㎡</span>
+      </span>
+      <span class="field"><label>朝向</label>
+        <span class="cgroup" id="orientChips"></span>
+      </span>
+    </div>
+
+    <!-- ③ 税费 · 权属 · 楼层 · 电梯 -->
+    <div class="line">
+      <span class="field"><label>税费状态</label>
+        <span class="msel" id="txSel">
+          <button><span id="txLab">全部税费状态</span> ▾</button>
+          <div class="pop" id="txPop"></div>
+        </span>
+      </span>
+      <span class="field"><label>交易权属</label>
+        <span class="msel" id="ownSel">
+          <button><span id="ownLab">全部权属</span> ▾</button>
+          <div class="pop" id="ownPop">
+            <label><input type="checkbox" value="commodity"> 商品房</label>
+            <label><input type="checkbox" value="resettle"> 拆迁安置类(回迁房/安置房)</label>
+            <label><input type="checkbox" value="other"> 其他非商品房</label>
+            <label><input type="checkbox" value="unknown"> 未抓取</label>
+          </div>
+        </span>
+      </span>
+      <span class="field"><label>楼层</label>
+        <span class="cgroup" id="floorChips"></span>
+      </span>
+      <span class="field"><label>电梯</label>
+        <span class="cgroup" id="liftChips"></span>
+      </span>
+    </div>
+
+    <!-- ④ 上限 / 下限类 -->
     <div class="line">
       <span class="field"><label>租售比下限</label>
-        <input type="range" id="yMin" min="0" max="5" step="0.1" value="0" style="width:110px">
+        <input type="range" id="yMin" min="0" max="5" step="0.1" value="0" style="width:100px">
         <span class="tiny" id="yLab">不限</span>
       </span>
       <span class="field"><label>地铁上限</label>
-        <input type="range" id="mMax" min="300" max="3000" step="100" value="3000" style="width:110px">
+        <input type="range" id="mMax" min="300" max="3000" step="100" value="3000" style="width:100px">
         <span class="tiny" id="mLab">不限</span>
       </span>
       <span class="field"><label>楼龄上限</label>
-        <input type="range" id="aMax" min="5" max="60" step="1" value="60" style="width:110px">
+        <input type="range" id="aMax" min="5" max="60" step="1" value="60" style="width:100px">
         <span class="tiny" id="aLab">不限</span>
       </span>
-      <label class="chk"><input type="checkbox" id="onlyCut"> 只看贝壳标「近期降价」</label>
-      <label class="chk"><input type="checkbox" id="onlyCash"> 只看净现金流为正</label>
-      <label class="chk"><input type="checkbox" id="onlyNoVat"> 排除未满两年(免增值税)</label>
-    </div>
-    <div class="line">
-      <span class="field" style="font-weight:700;color:var(--ink)">交易权属</span>
-      <span class="msel" id="ownSel">
-        <button><span id="ownLab">全部权属</span> ▾</button>
-        <div class="pop" id="ownPop">
-          <label><input type="checkbox" value="commodity"> 商品房</label>
-          <label><input type="checkbox" value="resettle"> 拆迁安置类(回迁房/安置房)</label>
-          <label><input type="checkbox" value="other"> 其他非商品房</label>
-          <label><input type="checkbox" value="unknown"> 未抓取</label>
-        </div>
+      <span class="field"><label>挂牌上限</label>
+        <input type="range" id="dxMax" min="30" max="730" step="30" value="730" style="width:100px">
+        <span class="tiny" id="dxLab">不限</span>
       </span>
-      <label class="chk"><input type="checkbox" id="onlyCommodity"> 只看商品房(排除全部非商品房与未抓取)</label>
-      <span class="tiny">权属来自贝壳 <code>buy detail</code> 的单套字段;小区级权属构成见详情弹窗</span>
+      <span class="field"><label>同小区在售</label>
+        <input type="range" id="sMax" min="1" max="10" step="1" value="10" style="width:88px">
+        <span class="tiny" id="sLab">不限</span>
+      </span>
+    </div>
+
+    <!-- ⑤ 开关类条件 -->
+    <div class="line">
+      <label class="chk"><input type="checkbox" id="onlyCut"> 只看壳标「近期降价」</label>
+      <label class="chk"><input type="checkbox" id="onlyCash"> 只看净现金流为正</label>
+      <label class="chk"><input type="checkbox" id="onlyNoVat"> 排除未满两年</label>
+      <label class="chk"><input type="checkbox" id="onlyCommodity"> 只看商品房</label>
+      <label class="chk"><input type="checkbox" id="onlySchool"> 只看有对口学校</label>
+      <label class="chk"><input type="checkbox" id="onlyYield"> 只看有租售比</label>
+      <label class="chk"><input type="checkbox" id="noMortgage"> 排除有抵押</label>
+      <label class="chk"><input type="checkbox" id="certOK"> 仅三证齐全</label>
+      <label class="chk"><input type="checkbox" id="noShared"> 排除共有产权</label>
+    </div>
+
+    <!-- ⑥ 当前筛选摘要 -->
+    <div class="fsum">
+      <span class="fcnt">命中 <b id="fCnt">0</b> 套</span>
+      <span class="fbits" id="fBits"></span>
+      <button class="btn gh tsm" id="fReset" style="margin-left:auto">重置全部筛选</button>
     </div>
   </div>
   <div class="tbox"><div id="t_all"></div></div>
@@ -978,7 +1072,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
 <div class="foot">
   数据来源:贝壳官方开放平台(beike CLI,经官方 Bearer Key 授权);市场参照层见「数据来源与口径台账」。<br>
   房源状态为采集时点的「在售」;价格、权属、学区、税费均需实地与不动产登记中心核验。<br>
-  本页为个人决策辅助工具,不构成投资建议。生成时间 2026-10-04 13:38 · 当期样本 226 套 / 累计池 761 套。
+  本页为个人决策辅助工具,不构成投资建议。生成时间 2026-10-04 13:51 · 当期样本 226 套 / 累计池 761 套。
 </div>
 
 </div>
@@ -1043,9 +1137,19 @@ const FIN = {
   needSchool: false
 };
 const F = {
-  q: '', districts: new Set(), priceMin: 0, priceMax: 999, yieldMin: 0,
-  metroMax: 99999, ageMax: 99, onlyCut: false, onlyCash: false, onlyNoVat: false,
-  ownership: new Set(), onlyCommodity: false
+  q: '', districts: new Set(), rooms: new Set(), types: new Set(['resi']),
+  priceMin: 0, priceMax: 9999, unitMin: 0, unitMax: 999999,
+  areaMin: 0, areaMax: 9999, yieldMin: 0,
+  metroMax: 99999, ageMax: 99, daysMax: 99999, supplyMax: 99,
+  tax: new Set(), floor: '', lift: '', orient: new Set(), onlySchool: false,
+  onlyCut: false, onlyCash: false, onlyNoVat: false,
+  ownership: new Set(), onlyCommodity: false,
+  noMortgage: false, certOK: false, noShared: false, onlyYield: false
+};
+// 各区间控件的「不限」边界 —— 与模板里的 input[type=range] 属性一一对应
+const BOUND = {
+  price: [50, 200], unit: [5000, 60000], area: [20, 200],
+  yield: [0, 5], metro: [300, 3000], age: [5, 60], days: [30, 730], supply: [1, 10]
 };
 const SORT = { t_main: { i: -1, asc: false }, t_all: { i: -1, asc: false }, t_apt: { i: -1, asc: false } };
 
@@ -1324,22 +1428,75 @@ function doSort(tid, i) {
 }
 
 /* ── ⑦ 过滤 ───────────────────────────────────────────────────────── */
-function pass(r) {
-  if (F.q) {
+/* 分类器:统一「原始字段 → 可筛选枚举」的映射,模板与计数共用同一套 */
+const typeOf = r => (r.is_70y ? 'resi' : 'apt');
+const TYPE_LABEL = { resi: '70 年住宅', apt: '40·50 公寓' };
+
+const TAX_ORDER = ['5only', '5y', '2to5', 'not2'];
+const TAX_LABEL = {
+  '5only': '满五唯一·免个税', '5y': '满五非唯一',
+  '2to5': '满两年未满五', 'not2': '未满两年·增值税5.3%'
+};
+function taxCat(r) {
+  if (r.not_two) return 'not2';
+  if (r.five_years && r.only_home) return '5only';
+  if (r.five_years) return '5y';
+  return '2to5';
+}
+const LIFT_ORDER = ['has', 'none'];
+const LIFT_LABEL = { has: '有电梯', none: '无/未确认' };
+function liftCat(r) {
+  const s = r.lift || '';
+  return s.indexOf('有电梯') >= 0 && s.indexOf('无电梯') < 0 ? 'has' : 'none';
+}
+function roomCat(r) { return r.rooms == null ? '' : String(r.rooms); }
+function orientCat(r) { return r.orientation || ''; }
+
+/* 选项清单:楼栋层与朝向从数据里长出来,按出现次数降序(避免死选项) */
+const optByFreq = fn => {
+  const c = {};
+  P.listings.forEach(r => { const k = fn(r); if (k) c[k] = (c[k] || 0) + 1; });
+  return Object.keys(c).sort((a, b) => c[b] - c[a]);
+};
+const FLOOR_ORDER = ['低楼层', '中楼层', '高楼层'];
+
+/* 单一入口:skip 用于 facet 计数时「忽略本维度自身的选择」 */
+function pass(r, skip) {
+  if (skip !== 'q' && F.q) {
     const hay = [r.community, r.district, r.biz_area, r.school, r.title, r.highlights, r.trade_info]
       .join(' ').toLowerCase();
     if (hay.indexOf(F.q.toLowerCase()) < 0) return false;
   }
-  if (F.districts.size && !F.districts.has(r.district)) return false;
+  if (skip !== 'districts' && F.districts.size && !F.districts.has(r.district)) return false;
+  if (skip !== 'types' && F.types.size && !F.types.has(typeOf(r))) return false;
+  if (skip !== 'rooms' && F.rooms.size && !F.rooms.has(roomCat(r))) return false;
   if (r.total_price < F.priceMin || r.total_price > F.priceMax) return false;
+  if (F.unitMin > BOUND.unit[0] || F.unitMax < BOUND.unit[1]) {
+    if (r.unit_price == null || r.unit_price < F.unitMin || r.unit_price > F.unitMax) return false;
+  }
+  if (F.areaMin > BOUND.area[0] || F.areaMax < BOUND.area[1]) {
+    if (r.build_area == null || r.build_area < F.areaMin || r.build_area > F.areaMax) return false;
+  }
   if (F.yieldMin > 0 && (!r.rent_yield || r.rent_yield < F.yieldMin)) return false;
-  if (F.metroMax < 99999 && (r.metro_walk_m == null || r.metro_walk_m > F.metroMax)) return false;
-  if (F.ageMax < 99 && (r.age == null || r.age > F.ageMax)) return false;
+  if (F.metroMax < BOUND.metro[1] && (r.metro_walk_m == null || r.metro_walk_m > F.metroMax)) return false;
+  if (F.ageMax < BOUND.age[1] && (r.age == null || r.age > F.ageMax)) return false;
+  // 挂牌天数:按天数筛选时,未抓到的房源无法核验 → 一并排除(标签里有说明)
+  if (F.daysMax < BOUND.days[1] && (r.list_days == null || r.list_days > F.daysMax)) return false;
+  if (F.supplyMax < BOUND.supply[1] && r.supply_self > F.supplyMax) return false;
+  if (skip !== 'tax' && F.tax.size && !F.tax.has(taxCat(r))) return false;
+  if (skip !== 'floor' && F.floor && r.floor_level !== F.floor) return false;
+  if (skip !== 'lift' && F.lift && liftCat(r) !== F.lift) return false;
+  if (skip !== 'orient' && F.orient.size && !F.orient.has(orientCat(r))) return false;
+  if (F.onlySchool && !r.school) return false;
+  if (F.onlyYield && !r.rent_yield) return false;
   if (F.onlyCut && !r.recent_cut) return false;
   if (F.onlyCash && r._c.cash < 0) return false;
   if (F.onlyNoVat && r.not_two) return false;
+  if (F.noMortgage && r.mortgaged) return false;
+  if (F.certOK && r.certs_complete !== '是') return false;
+  if (F.noShared && r.shared_ownership === '是') return false;
   if (F.onlyCommodity && r.ownership_class !== '商品房') return false;
-  if (F.ownership.size && !F.ownership.has(ownGroup(r))) return false;
+  if (skip !== 'ownership' && F.ownership.size && !F.ownership.has(ownGroup(r))) return false;
   return true;
 }
 
@@ -1352,9 +1509,216 @@ function ownGroup(r) {
   return 'other';
 }
 
+/* ── ⑦b 筛选器 UI 构建(2026-10-04 新增) ──────────────────────────── */
+
+/* 维度定义:一处声明,chip 渲染 + 计数 + 摘要全部复用 */
+const DIMS = [
+  // 产权类型是互斥单选(住宅 / 公寓 / 不限),用 exclusive 标记避免「两个都选 = 全部」的歧义
+  { id: 'typeChips', fkey: 'types', multi: true, exclusive: true, fn: typeOf, opts: () => ['resi', 'apt'], label: v => TYPE_LABEL[v] },
+  { id: 'roomChips', fkey: 'rooms', multi: true, fn: roomCat, opts: () => optByFreq(roomCat), label: v => v + ' 室' },
+  { id: 'floorChips', fkey: 'floor', multi: false, fn: r => r.floor_level || '', opts: () => FLOOR_ORDER, label: v => v },
+  { id: 'liftChips', fkey: 'lift', multi: false, fn: liftCat, opts: () => LIFT_ORDER, label: v => LIFT_LABEL[v] },
+  { id: 'orientChips', fkey: 'orient', multi: true, fn: orientCat, opts: () => optByFreq(orientCat), label: v => v }
+];
+
+/* 单选 chip 组的显示标题(用于筛选摘要) */
+const DIM_TITLE = {
+  typeChips: '产权', roomChips: '户型', floorChips: '楼层',
+  liftChips: '电梯', orientChips: '朝向'
+};
+
+function buildChips() {
+  DIMS.forEach(d => {
+    const el = document.getElementById(d.id);
+    if (!el) return;
+    const noneOn = d.multi ? F[d.fkey].size === 0 : !F[d.fkey];
+    const none = `<button class="chip sm${noneOn ? ' on' : ''}" data-v="">不限</button>`;
+    el.innerHTML = none + d.opts().map(v => {
+      const on = d.multi ? F[d.fkey].has(v) : F[d.fkey] === v;
+      return `<button class="chip sm${on ? ' on' : ''}" data-v="${esc(v)}">${esc(d.label(v))}`
+        + ` <i class="fc" data-c="${esc(v)}"></i></button>`;
+    }).join('');
+  });
+  // 税费状态弹层
+  const tx = document.getElementById('txPop');
+  if (tx) {
+    tx.className = 'pop wide';
+    tx.innerHTML = TAX_ORDER.map(k =>
+      `<label><input type="checkbox" value="${k}"> ${esc(TAX_LABEL[k])}<span class="fc" data-c="${k}"></span></label>`
+    ).join('') + `<div class="acts"><a id="txAll">全选</a><a id="txClear">清空</a></div>`;
+  }
+}
+
+/* facet 计数:忽略该维度自身的选择,其余筛选照常生效 */
+function facetN(dim, val) {
+  return P.rows.reduce((n, r) => n + (pass(r, dim) && DIMS_FN[dim](r) === val ? 1 : 0), 0);
+}
+const DIMS_FN = {};
+DIMS.forEach(d => { DIMS_FN[d.fkey] = d.fn; });
+DIMS_FN.ownership = ownGroup;
+DIMS_FN.districts = r => r.district;
+
+function refreshFacets() {
+  DIMS.forEach(d => {
+    const el = document.getElementById(d.id);
+    if (!el) return;
+    el.querySelectorAll('button[data-v]').forEach(b => {
+      const v = b.dataset.v, i = b.querySelector('i');
+      if (!v) {
+        const n = P.rows.reduce((s, r) => s + (pass(r, d.fkey) ? 1 : 0), 0);
+        if (i) i.textContent = '';
+        b.classList.toggle('zero', n === 0);
+        return;
+      }
+      const n = facetN(d.fkey, v);
+      if (i) i.textContent = n;
+      b.classList.toggle('zero', n === 0);
+    });
+  });
+  const fill = (sel, dim, valOf) => {
+    document.querySelectorAll(sel + ' input').forEach(inp => {
+      const lbl = inp.closest('label');
+      if (!lbl) return;
+      let s = lbl.querySelector('.fc');
+      if (!s) { s = document.createElement('span'); s.className = 'fc'; lbl.appendChild(s); }
+      const n = P.rows.reduce((t, r) => t + (pass(r, dim) && valOf(r, inp.value) ? 1 : 0), 0);
+      s.textContent = n;
+      lbl.classList.toggle('dis', n === 0);
+    });
+  };
+  fill('#dPop', 'districts', (r, v) => r.district === v);
+  fill('#txPop', 'tax', (r, v) => taxCat(r) === v);
+  fill('#ownPop', 'ownership', (r, v) => ownGroup(r) === v);
+}
+
+/* 筛选摘要:把「当前启用了什么」写出来,并可一键移除单项 */
+function renderFilterSummary(hits) {
+  const bits = [];
+  const push = (t, v, undo) => bits.push({ t, v, undo });
+  if (F.q) push('关键词', F.q, () => { F.q = ''; document.getElementById('q').value = ''; });
+  if (F.districts.size) push('区域', Array.from(F.districts).join('/'),
+    () => { F.districts.clear(); document.querySelectorAll('#dPop input').forEach(c => c.checked = false); syncSelLabels(); });
+  // 产权类型默认 = 仅 70 年住宅(与榜单标题一致),只有偏离默认才计入「已启用筛选」
+  const isDefaultType = F.types.size === 1 && F.types.has('resi');
+  if (!isDefaultType) {
+    const t = !F.types.size ? '全部类型'
+      : (!F.types.has('resi') ? '仅 40·50 公寓' : '住宅 + 公寓');
+    push('产权', t, () => { F.types = new Set(['resi']); buildChips(); });
+  }
+  if (F.rooms.size) push('户型', Array.from(F.rooms).sort().map(v => v + '室').join('/'),
+    () => { F.rooms.clear(); buildChips(); });
+  if (F.priceMin > BOUND.price[0] || F.priceMax < BOUND.price[1])
+    push('总价', F.priceMin + '–' + F.priceMax + ' 万',
+      () => resetRange('pMin', 'pMax', 'price', 'pLab',
+        () => BOUND.price[0] + ' – ' + BOUND.price[1] + ' 万'));
+  if (F.unitMin > BOUND.unit[0] || F.unitMax < BOUND.unit[1])
+    push('单价', yuan(F.unitMin) + '–' + yuan(F.unitMax) + ' 元/㎡',
+      () => resetRange('uMin', 'uMax', 'unit', 'uLab', () => '不限'));
+  if (F.areaMin > BOUND.area[0] || F.areaMax < BOUND.area[1])
+    push('建面', F.areaMin + '–' + F.areaMax + ' ㎡',
+      () => resetRange('arMin', 'arMax', 'area', 'arLab', () => '不限'));
+  if (F.tax.size) push('税费', Array.from(F.tax).map(k => TAX_LABEL[k].split('·')[0]).join('/'),
+    () => { F.tax.clear(); document.querySelectorAll('#txPop input').forEach(c => c.checked = false); syncSelLabels(); });
+  if (F.ownership.size) push('权属', '已选 ' + F.ownership.size + ' 项',
+    () => { F.ownership.clear(); document.querySelectorAll('#ownPop input').forEach(c => c.checked = false); syncSelLabels(); });
+  if (F.floor) push('楼层', F.floor, () => { F.floor = ''; buildChips(); });
+  if (F.lift) push('电梯', LIFT_LABEL[F.lift], () => { F.lift = ''; buildChips(); });
+  if (F.orient.size) push('朝向', Array.from(F.orient).join('/'), () => { F.orient.clear(); buildChips(); });
+  if (F.yieldMin > 0) push('租售比', '≥ ' + F.yieldMin.toFixed(1) + '%', () => resetRange('yMin', null, 'yield', 'yLab', () => '不限'));
+  if (F.metroMax < BOUND.metro[1]) push('地铁', '≤ ' + F.metroMax + 'm', () => resetRange('mMax', null, 'metro', 'mLab', () => '不限'));
+  if (F.ageMax < BOUND.age[1]) push('楼龄', '≤ ' + F.ageMax + ' 年', () => resetRange('aMax', null, 'age', 'aLab', () => '不限'));
+  if (F.daysMax < BOUND.days[1]) push('挂牌', '≤ ' + F.daysMax + ' 天', () => resetRange('dxMax', null, 'days', 'dxLab', () => '不限'));
+  if (F.supplyMax < BOUND.supply[1]) push('同小区在售', '≤ ' + F.supplyMax + ' 套', () => resetRange('sMax', null, 'supply', 'sLab', () => '不限'));
+  const CHK = {
+    onlyCut: '近期降价', onlyCash: '净现金流为正', onlyNoVat: '排除未满两年',
+    onlyCommodity: '仅商品房', onlySchool: '有对口学校', onlyYield: '有租售比',
+    noMortgage: '排除有抵押', certOK: '仅三证齐全', noShared: '排除共有产权'
+  };
+  Object.keys(CHK).forEach(id => {
+    if (F[id]) push('条件', CHK[id], () => { F[id] = false; const e = document.getElementById(id); if (e) e.checked = false; });
+  });
+
+  const cEl = document.getElementById('fCnt');
+  if (cEl) cEl.textContent = hits;
+  const box = document.getElementById('fBits');
+  if (!box) return;
+  if (!bits.length) {
+    box.innerHTML = '<span class="fempty">未启用任何筛选 · 下方即为完整池</span>';
+    return;
+  }
+  box.innerHTML = bits.map((b, i) =>
+    `<button class="fbit" data-i="${i}"><span>${esc(b.t)}</span><span class="fv">${esc(b.v)}</span></button>`
+  ).join('');
+  box.querySelectorAll('.fbit').forEach(el => el.addEventListener('click', () => {
+    bits[+el.dataset.i].undo(); refresh();
+  }));
+}
+
+/* 区间控件复位助手 */
+function resetRange(idMin, idMax, boundKey, labId, labFn) {
+  const b = BOUND[boundKey];
+  const a = document.getElementById(idMin), z = idMax && document.getElementById(idMax);
+  if (a) a.value = b[0];
+  if (z) z.value = b[1];
+  if (boundKey === 'price') { F.priceMin = b[0]; F.priceMax = b[1]; }
+  if (boundKey === 'unit') { F.unitMin = b[0]; F.unitMax = b[1]; }
+  if (boundKey === 'area') { F.areaMin = b[0]; F.areaMax = b[1]; }
+  if (boundKey === 'yield') F.yieldMin = b[0];
+  if (boundKey === 'metro') F.metroMax = b[1];
+  if (boundKey === 'age') F.ageMax = b[1];
+  if (boundKey === 'days') F.daysMax = b[1];
+  if (boundKey === 'supply') F.supplyMax = b[1];
+  const l = document.getElementById(labId);
+  if (l) l.textContent = labFn(b[1]);
+}
+
+/* 重设全部筛选 */
+function resetFilters() {
+  Object.assign(F, {
+    q: '', priceMin: BOUND.price[0], priceMax: BOUND.price[1],
+    unitMin: BOUND.unit[0], unitMax: BOUND.unit[1],
+    areaMin: BOUND.area[0], areaMax: BOUND.area[1], yieldMin: 0,
+    metroMax: BOUND.metro[1], ageMax: BOUND.age[1],
+    daysMax: BOUND.days[1], supplyMax: BOUND.supply[1],
+    floor: '', lift: '', onlySchool: false, onlyCut: false, onlyCash: false,
+    onlyNoVat: false, onlyCommodity: false, noMortgage: false,
+    certOK: false, noShared: false, onlyYield: false
+  });
+  F.types = new Set(['resi']);
+  F.districts.clear(); F.rooms.clear(); F.tax.clear(); F.orient.clear(); F.ownership.clear();
+  const setv = (id, v) => { const e = document.getElementById(id); if (e) e.value = v; };
+  setv('q', ''); setv('pMin', BOUND.price[0]); setv('pMax', BOUND.price[1]);
+  setv('uMin', BOUND.unit[0]); setv('uMax', BOUND.unit[1]);
+  setv('arMin', BOUND.area[0]); setv('arMax', BOUND.area[1]);
+  setv('yMin', 0); setv('mMax', BOUND.metro[1]); setv('aMax', BOUND.age[1]);
+  setv('dxMax', BOUND.days[1]); setv('sMax', BOUND.supply[1]);
+  document.querySelectorAll('#dPop input, #txPop input, #ownPop input').forEach(c => { c.checked = false; });
+  ['onlyCut', 'onlyCash', 'onlyNoVat', 'onlyCommodity', 'onlySchool', 'onlyYield',
+    'noMortgage', 'certOK', 'noShared'].forEach(id => { const e = document.getElementById(id); if (e) e.checked = false; });
+  const setLab = (id, t) => { const e = document.getElementById(id); if (e) e.textContent = t; };
+  setLab('pLab', BOUND.price[0] + ' – ' + BOUND.price[1] + ' 万');
+  setLab('uLab', '不限'); setLab('arLab', BOUND.area[0] + ' – ' + BOUND.area[1] + ' ㎡');
+  setLab('yLab', '不限'); setLab('mLab', '不限'); setLab('aLab', '不限');
+  setLab('dxLab', '不限'); setLab('sLab', '不限');
+  buildChips(); syncSelLabels(); refresh();
+}
+
+/* 多选弹层按钮文案同步 */
+function syncSelLabels() {
+  const set = (id, labId, map, def) => {
+    const el = document.getElementById(labId);
+    if (!el) return;
+    el.textContent = F[id].size
+      ? '已选 ' + Array.from(F[id]).map(k => map[k] || k).join('/') : def;
+  };
+  set('districts', 'dLab', {}, '全部区域');
+  set('tax', 'txLab', TAX_LABEL, '全部税费状态');
+  set('ownership', 'ownLab', { commodity: '商品房', resettle: '拆迁安置类', other: '其他非商品房', unknown: '未抓取' }, '全部权属');
+}
+
 /* ── ⑧ 汇总面板(随权重与财务参数变化) ────────────────────────────── */
 function renderSummary() {
-  const rows = P.rows.filter(r => r.is_70y).filter(pass);
+  const rows = P.rows.filter(r => pass(r));
   const withRent = rows.filter(r => r.rent_month);
   const cashPos = withRent.filter(r => r._c.cash >= 0).length;
   const med = a => {
@@ -1411,12 +1775,23 @@ function mainExpand() { mainShown = Infinity; F.q = F.q; refresh(); }
 
 function refresh() {
   rescore();
-  const resi = P.rows.filter(r => r.is_70y);
-  const mainRows = resi.filter(pass);
+  const mainRows = P.rows.filter(r => pass(r));
   renderTable('t_main', mainRows.slice(0, mainShown));
   renderTable('t_all', mainRows);
-  renderTable('t_apt', P.rows.filter(r => !r.is_70y).filter(pass));
+  // 公寓参考榜:不受「产权类型」维度约束(它本身就是公寓专列),其余筛选照常生效
+  renderTable('t_apt', P.rows.filter(r => !r.is_70y).filter(r => pass(r, 'types')));
   renderSummary();
+  refreshFacets();
+  renderFilterSummary(mainRows.length);
+  // 标题随「产权类型」选择变化
+  const onlyResi = F.types.has('resi') && !F.types.has('apt');
+  const onlyApt = F.types.has('apt') && !F.types.has('resi');
+  const title = onlyResi ? '70 年产权住宅'
+    : (onlyApt ? '40 / 50 年产权公寓' : '70 年住宅 + 40·50 年公寓');
+  const mt = document.getElementById('mainTitle');
+  if (mt) mt.textContent = title;
+  const at = document.getElementById('allTitle');
+  if (at) at.textContent = title;
   // 主榜计数与「显示更多」按钮
   const tot = document.getElementById('mainTot');
   if (tot) tot.textContent = `前 ${Math.min(mainShown, mainRows.length)} / 共 ${mainRows.length} 套`;
@@ -1732,7 +2107,7 @@ function csvVal(c, r) {
   }
 }
 function exportCsv() {
-  const rows = P.rows.filter(r => r.is_70y).filter(pass);
+  const rows = P.rows.filter(r => pass(r));
   const cols = visibleCols().filter(c => c.l !== '操作 / 跳转' && c.l !== '风险与标签' && c.l !== '小区 / 板块');
   const head = ['小区', '区域', '板块', '风险标签', ...cols.map(c => c.l.replace('*', ''))];
   const out = [head.join(',')];
@@ -1754,54 +2129,135 @@ function exportCsv() {
 
 /* ── ⑬ 事件绑定 ───────────────────────────────────────────────────── */
 function bindControls() {
+  buildChips();                       // 动态 chip / 税费弹层先落地,再挂事件
+
+  const on = (id, ev, fn) => { const e = document.getElementById(id); if (e) e.addEventListener(ev, fn); };
+
   document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
     t.classList.add('on');
     drawTrend(t.dataset.g);
   }));
-  document.getElementById('q').addEventListener('input', e => { F.q = e.target.value.trim(); refresh(); });
-  document.getElementById('pMin').addEventListener('input', e => {
-    F.priceMin = +e.target.value;
-    if (F.priceMin > F.priceMax) { F.priceMax = F.priceMin; document.getElementById('pMax').value = F.priceMin; }
-    document.getElementById('pLab').textContent = F.priceMin + ' – ' + F.priceMax + ' 万';
-    refresh();
+
+  on('q', 'input', e => { F.q = e.target.value.trim(); refresh(); });
+
+  /* 双滑杆(区间):总价 / 单价 / 建面 —— 通用绑定,两端互不穿越 */
+  const dual = (minId, maxId, key, labId, fmt) => {
+    const a = document.getElementById(minId), z = document.getElementById(maxId);
+    if (!a || !z) return;
+    const lab = () => { const l = document.getElementById(labId); if (l) l.textContent = fmt(); };
+    a.addEventListener('input', e => {
+      F[key + 'Min'] = +e.target.value;
+      if (F[key + 'Min'] > F[key + 'Max']) { F[key + 'Max'] = F[key + 'Min']; z.value = F[key + 'Min']; }
+      lab(); refresh();
+    });
+    z.addEventListener('input', e => {
+      F[key + 'Max'] = +e.target.value;
+      if (F[key + 'Max'] < F[key + 'Min']) { F[key + 'Min'] = F[key + 'Max']; a.value = F[key + 'Max']; }
+      lab(); refresh();
+    });
+  };
+  const atFull = k => F[k + 'Min'] <= BOUND[k][0] && F[k + 'Max'] >= BOUND[k][1];
+  dual('pMin', 'pMax', 'price', 'pLab',
+    () => atFull('price') ? BOUND.price[0] + ' – ' + BOUND.price[1] + ' 万' : F.priceMin + ' – ' + F.priceMax + ' 万');
+  dual('uMin', 'uMax', 'unit', 'uLab',
+    () => atFull('unit') ? '不限' : yuan(F.unitMin) + ' – ' + yuan(F.unitMax) + ' 元/㎡');
+  dual('arMin', 'arMax', 'area', 'arLab',
+    () => atFull('area') ? BOUND.area[0] + ' – ' + BOUND.area[1] + ' ㎡' : F.areaMin + ' – ' + F.areaMax + ' ㎡');
+
+  /* 单端滑杆(上限/下限) */
+  const single = (id, key, labId, fmt) => {
+    const e = document.getElementById(id);
+    if (!e) return;
+    e.addEventListener('input', ev => {
+      F[key] = +ev.target.value;
+      const l = document.getElementById(labId); if (l) l.textContent = fmt();
+      refresh();
+    });
+  };
+  single('yMin', 'yieldMin', 'yLab', () => F.yieldMin ? '≥ ' + F.yieldMin.toFixed(1) + '%' : '不限');
+  single('mMax', 'metroMax', 'mLab', () => F.metroMax < BOUND.metro[1] ? '≤ ' + F.metroMax + ' m' : '不限');
+  single('aMax', 'ageMax', 'aLab', () => F.ageMax < BOUND.age[1] ? '≤ ' + F.ageMax + ' 年' : '不限');
+  single('dxMax', 'daysMax', 'dxLab', () => F.daysMax < BOUND.days[1] ? '≤ ' + F.daysMax + ' 天' : '不限');
+  single('sMax', 'supplyMax', 'sLab', () => F.supplyMax < BOUND.supply[1] ? '≤ ' + F.supplyMax + ' 套' : '不限');
+
+  /* 勾选类条件 */
+  ['onlyCut', 'onlyCash', 'onlyNoVat', 'onlyCommodity', 'onlySchool', 'onlyYield',
+    'noMortgage', 'certOK', 'noShared'].forEach(id => {
+    on(id, 'change', e => { F[id] = e.target.checked; refresh(); });
   });
-  document.getElementById('pMax').addEventListener('input', e => {
-    F.priceMax = +e.target.value;
-    if (F.priceMax < F.priceMin) { F.priceMin = F.priceMax; document.getElementById('pMin').value = F.priceMax; }
-    document.getElementById('pLab').textContent = F.priceMin + ' – ' + F.priceMax + ' 万';
-    refresh();
+
+  /* 单选 / 多选 chip 组:容器级委托,重建 innerHTML 也不会丢事件 */
+  DIMS.forEach(d => {
+    const el = document.getElementById(d.id);
+    if (!el) return;
+    el.addEventListener('click', e => {
+      const b = e.target.closest('button[data-v]');
+      if (!b) return;
+      const v = b.dataset.v;
+      if (d.multi && d.exclusive) {
+        F[d.fkey].clear();
+        if (v) F[d.fkey].add(v);
+      } else if (d.multi) {
+        if (!v) F[d.fkey].clear();
+        else if (F[d.fkey].has(v)) F[d.fkey].delete(v);
+        else F[d.fkey].add(v);
+      } else {
+        F[d.fkey] = v;
+      }
+      buildChips();
+      refresh();
+    });
   });
-  document.getElementById('yMin').addEventListener('input', e => {
-    F.yieldMin = +e.target.value;
-    document.getElementById('yLab').textContent = F.yieldMin ? '≥ ' + F.yieldMin.toFixed(1) + '%' : '不限';
-    refresh();
-  });
-  document.getElementById('mMax').addEventListener('input', e => {
-    F.metroMax = +e.target.value;
-    document.getElementById('mLab').textContent = F.metroMax < 99999 ? '≤ ' + F.metroMax + ' m' : '不限';
-    refresh();
-  });
-  document.getElementById('aMax').addEventListener('input', e => {
-    F.ageMax = +e.target.value;
-    document.getElementById('aLab').textContent = F.ageMax < 99 ? '≤ ' + F.ageMax + ' 年' : '不限';
-    refresh();
-  });
-  ['onlyCut', 'onlyCash', 'onlyNoVat', 'onlyCommodity'].forEach(id => {
-    document.getElementById(id).addEventListener('change', e => { F[id] = e.target.checked; refresh(); });
-  });
+
+  /* 税费状态弹层(内容由 buildChips 生成 → 用委托) */
+  const txp = document.getElementById('txPop');
+  if (txp) {
+    txp.addEventListener('change', e => {
+      const inp = e.target.closest('input[type=checkbox]');
+      if (!inp) return;
+      if (inp.checked) F.tax.add(inp.value); else F.tax.delete(inp.value);
+      syncSelLabels(); refresh();
+    });
+    txp.addEventListener('click', e => {
+      const a = e.target.closest('a');
+      if (!a) return;
+      F.tax.clear();
+      txp.querySelectorAll('input').forEach(c => { c.checked = false; });
+      syncSelLabels(); refresh();
+    });
+  }
+
+  /* 交易权属弹层(静态 DOM,直接绑定) */
   document.querySelectorAll('#ownPop input').forEach(c => c.addEventListener('change', e => {
     if (e.target.checked) F.ownership.add(e.target.value); else F.ownership.delete(e.target.value);
-    const map = { commodity: '商品房', resettle: '拆迁安置类', other: '其他非商品房', unknown: '未抓取' };
-    document.getElementById('ownLab').textContent = F.ownership.size
-      ? '已选 ' + Array.from(F.ownership).map(k => map[k] || k).join('/') : '全部权属';
+    syncSelLabels(); refresh();
+  }));
+
+  /* 区域弹层 */
+  document.querySelectorAll('#dPop input').forEach(c => c.addEventListener('change', e => {
+    if (e.target.checked) F.districts.add(e.target.value); else F.districts.delete(e.target.value);
+    syncSelLabels(); refresh();
+  }));
+  ['dAll', 'dClear'].forEach(id => {
+    const a = document.getElementById(id);
+    if (a) a.onclick = () => {
+      F.districts.clear();
+      document.querySelectorAll('#dPop input').forEach(c => { c.checked = false; });
+      syncSelLabels(); refresh();
+    };
+  });
+
+  /* 一键重置 */
+  on('fReset', 'click', () => resetFilters());
+
+  /* 列分组开关 */
+  document.querySelectorAll('#colsPop input').forEach(c => c.addEventListener('change', e => {
+    if (e.target.checked) state.groups.add(e.target.value); else state.groups.delete(e.target.value);
     refresh();
   }));
-  document.querySelectorAll('.gchk').forEach(c => c.addEventListener('change', e => {
-    const g = e.target.value;
-    if (e.target.checked) state.groups.add(g); else state.groups.delete(g);
-    refresh();
-  }));
+
+  /* 权重 / 预设 / 面积档 / 财务参数(原有逻辑) */
   document.querySelectorAll('#wPanel .wslug input').forEach(inp => inp.addEventListener('input', e => {
     W[e.target.dataset.k] = +e.target.value;
     document.querySelectorAll('#wPanel .chip').forEach(x => x.classList.remove('on'));
@@ -1813,7 +2269,7 @@ function bindControls() {
     b.classList.add('on');
     refresh();
   }));
-  document.getElementById('profile').addEventListener('change', e => { FIN.profile = e.target.value; refresh(); });
+  on('profile', 'change', e => { FIN.profile = e.target.value; refresh(); });
   ['down', 'rate', 'years', 'agency'].forEach(k => {
     const el = document.getElementById('fin-' + k);
     if (!el) return;
@@ -1823,32 +2279,13 @@ function bindControls() {
       refresh();
     });
   });
+
+  /* 下拉弹层开合 */
   document.querySelectorAll('.msel > button').forEach(b => b.addEventListener('click', e => {
     e.stopPropagation();
     b.parentElement.classList.toggle('on');
   }));
   document.addEventListener('click', () => document.querySelectorAll('.msel').forEach(m => m.classList.remove('on')));
-  document.querySelectorAll('#dPop input').forEach(c => c.addEventListener('change', e => {
-    if (e.target.checked) F.districts.add(e.target.value); else F.districts.delete(e.target.value);
-    document.getElementById('dLab').textContent = F.districts.size ? '已选 ' + F.districts.size + ' 个区' : '全部区域';
-    refresh();
-  }));
-  document.getElementById('dAll').onclick = () => {
-    F.districts.clear();
-    document.querySelectorAll('#dPop input').forEach(c => { c.checked = false; });
-    document.getElementById('dLab').textContent = '全部区域';
-    refresh();
-  };
-  document.getElementById('dClear').onclick = () => {
-    F.districts.clear();
-    document.querySelectorAll('#dPop input').forEach(c => { c.checked = false; });
-    document.getElementById('dLab').textContent = '全部区域';
-    refresh();
-  };
-  document.querySelectorAll('#colsPop input').forEach(c => c.addEventListener('change', e => {
-    if (e.target.checked) state.groups.add(e.target.value); else state.groups.delete(e.target.value);
-    refresh();
-  }));
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
 }
 
